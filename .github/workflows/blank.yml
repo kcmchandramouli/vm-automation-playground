@@ -40,6 +40,17 @@ jobs:
 
       - name: Check Terraform Instellation
         run: terraform --version
-        
+
       - name: ls
         run: ls -la
+
+      - name: Terraform Initialization
+        run: terraform init  # Initializes Terraform in the working directory
+
+      - name: Terraform Plan
+        id: plan
+        run: erraform plan -out=tfplan  # Generates the Terraform execution plan
+
+      - name: Terraform Apply (if approved)
+        if: github.event_name == 'push'  # Apply only on push events
+        run: terraform apply -auto-approve tfplan  # Apply the plan automatically
