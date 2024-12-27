@@ -18,7 +18,7 @@ variable "azure_tenant_id" {
   type        = string
 }
 
-variable "resource_group_name" {
+variable "resource-group_name" {
   description = "Default Resource Group name"
   type        = string
   default     = "cm-vm-automation"
