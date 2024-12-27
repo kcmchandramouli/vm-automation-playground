@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "vm-automation-rg" {
-  name = "cm-vm-automation"
-  location = "Central India"
+  name = var.resource_group_name #"cm-vm-automation"
+  location = var.location #"Central India"
 }
 
 # Virtual Network
@@ -103,7 +103,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
 # Create the Storage Account
 resource "azurerm_storage_account" "vm-automation-storage-account" {
-  name                     = "VM-Automation-Storage-Account"
+  name                     = var.storage_account_name #"VM-Automation-Storage-Account"
   resource_group_name       = azurerm_resource_group.vm-automation-rg.name
   location                 = azurerm_resource_group.vm-automation-rg.location
   account_tier              = "Standard"
@@ -116,18 +116,9 @@ resource "azurerm_storage_account" "vm-automation-storage-account" {
 
 # Create Blob container for Terraform state file
 resource "azurerm_storage_container" "vm-automation-storage-container" {
-  name                  = "terraform-Blob-Container"
+  name                  =  var.storage_account_container_name #"Terraform-Blob-Container"
   storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
   container_access_type = "private"
-}
-
-terraform {
-  backend "azurerm" {
-    resource_group_name   = azurerm_resource_group.vm-automation-rg.name
-    storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
-    container_name        = azurerm_storage_container.vm-automation-storage-container.name
-    key                   = "terraform.tfstate"
-  }
 }
 
 # # Output the kube_config for kubectl usage
