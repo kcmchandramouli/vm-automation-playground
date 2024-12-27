@@ -3,21 +3,21 @@ resource "azurerm_resource_group" "vm-automation-rg" {
   location = var.location
 }
 
-# # Virtual Network
-# resource "azurerm_virtual_network" "vm-automation-vnet" {
-#   name                = "vm-automation-vnet"
-#   location            =  azurerm_resource_group.vm-automation-rg.location
-#   resource_group_name =  azurerm_resource_group.vm-automation-rg.name
-#   address_space       = ["10.0.0.0/16"]
-# }
+# Virtual Network
+resource "azurerm_virtual_network" "vm-automation-vnet" {
+  name                = "vm-automation-vnet"
+  location            =  azurerm_resource_group.vm-automation-rg.location
+  resource_group_name =  azurerm_resource_group.vm-automation-rg.name
+  address_space       = ["10.0.0.0/16"]
+}
 
-# # Subnet for VNet
-# resource "azurerm_subnet" "vm-automation-subnet" {
-#   name                 = "vm-automation-subnet-1"
-#   resource_group_name  = azurerm_resource_group.vm-automation-rg.name
-#   virtual_network_name = azurerm_virtual_network.vm-automation-vnet.name
-#   address_prefixes     = ["10.0.1.0/24"]
-# }
+# Subnet for VNet
+resource "azurerm_subnet" "vm-automation-subnet" {
+  name                 = "vm-automation-subnet-1"
+  resource_group_name  = azurerm_resource_group.vm-automation-rg.name
+  virtual_network_name = azurerm_virtual_network.vm-automation-vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
 
 # # Create Network Interface (NIC) for the VM
 # resource "azurerm_network_interface" "vm-automation-nic" {
