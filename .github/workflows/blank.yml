@@ -62,17 +62,22 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    env:
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
-      AZURE_CLIENT_ID: ${{ secrets.CLIENTID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
-      AZURE_TENANT_ID: ${{ secrets.TENANTID }}
-    steps:
+    # env:
+    #   AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+    #   AZURE_CLIENT_ID: ${{ secrets.CLIENTID }}
+    #   AZURE_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
+    #   AZURE_TENANT_ID: ${{ secrets.TENANTID }}
+    steps:        
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Initialization
         run: terraform init
