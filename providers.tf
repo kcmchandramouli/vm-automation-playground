@@ -10,8 +10,8 @@ terraform {
 provider "azurerm" {
   # Configuration options
   features { }
-    subscription_id = var.azure_subscription_id
-    client_id       = var.azure_client_id
-    client_secret   = var.azure_client_secret
-    tenant_id       = var.azure_tenant_id
+    subscription_id = "${{ vars.AZURE_SUBSCRIPTION_ID }}"
+    client_id       = "${{ vars.AZURE_CLIENT_ID }}"
+    client_secret   = "${{ vars.AZURE_CLIENT_SECRET }}"
+    tenant_id       = "${{ vars.AZURE_TENANT_ID }}"
 }
