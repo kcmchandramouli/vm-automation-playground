@@ -31,10 +31,10 @@ variable "location" {
 variable "storage_account_name" {
   description = "Default Storage account name"
   type        = string
-  default     = "VM-Automation-Storage-Account"
+  default     = "vmautostorageacc"
 }
 variable "storage_account_container_name" {
   description = "Default Container name in the Storage account"
   type        = string
-  default     = "Terraform-Blob-Container"
+  default     = "tf-blob-container"
 }
