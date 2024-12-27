@@ -121,6 +121,15 @@ resource "azurerm_storage_container" "vm-automation-storage-container" {
   container_access_type = "private"
 }
 
+terraform {
+  backend "azurerm" {
+    resource_group_name   = var.resource_group_name
+    storage_account_name  = var.storage_account_name
+    container_name        = var.storage_account_container_name
+    key                   = "terraform.tfstate"
+  }
+}
+
 # # # Output the kube_config for kubectl usage
 # # output "kube_config" {
 # #   value = azurerm_kubernetes_cluster.aks_cluster.kube_config_raw
