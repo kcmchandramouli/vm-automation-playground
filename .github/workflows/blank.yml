@@ -14,55 +14,68 @@ on:
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-latest
+#     env:
+#       AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
+#       AZURE_CLIENT_ID: ${{ secrets.CLIENTID }}
+#       AZURE_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
+#       AZURE_TENANT_ID: ${{ secrets.TENANTID }}
+
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+#       - uses: actions/checkout@v4
+
+#       - uses: hashicorp/setup-terraform@v3
+
+#       - name: Check Terraform Instellation
+#         run: terraform --version
+
+#       - name: ls
+#         run: ls -la
+
+#       - name: Terraform Initialization
+#         run: terraform init  # Initializes Terraform in the working directory
+
+#       # - name: Terraform Plan
+#       #   id: plan
+#       #   run: terraform plan -out=tfplan  # Generates the Terraform execution plan
+
+#       # - name: Terraform Apply
+#       #   env:
+#       #     TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+#       #     TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+#       #     TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+#       #     TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+#       #   run: terraform apply -auto-approve
+
+#       - name: Terraform Plan
+#         run: terraform plan
+
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  terraform:
     runs-on: ubuntu-latest
     env:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTIONID }}
       AZURE_CLIENT_ID: ${{ secrets.CLIENTID }}
       AZURE_CLIENT_SECRET: ${{ secrets.CLIENTSECRET }}
       AZURE_TENANT_ID: ${{ secrets.TENANTID }}
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # # Runs a single command using the runners shell
-      # - name: Run a one-line script
-      #   run: echo Hello, world!
-
-      # # Runs a set of commands using the runners shell
-      # - name: Run a multi-line script
-      #   run: |
-      #     echo Add other actions to build,
-      #     echo test, and deploy your project.
-      #     terraform --version
-
-      - uses: hashicorp/setup-terraform@v3
-
-      - name: Check Terraform Instellation
-        run: terraform --version
-
-      - name: ls
-        run: ls -la
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Initialization
-        run: terraform init  # Initializes Terraform in the working directory
-
-      # - name: Terraform Plan
-      #   id: plan
-      #   run: terraform plan -out=tfplan  # Generates the Terraform execution plan
-
-      # - name: Terraform Apply
-      #   env:
-      #     TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      #     TF_VAR_azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-      #     TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-      #   run: terraform apply -auto-approve
+        run: terraform init
 
       - name: Terraform Plan
         run: terraform plan
