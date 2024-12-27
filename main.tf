@@ -100,6 +100,36 @@ resource "azurerm_linux_virtual_machine" "vm" {
     environment = "test"
   }
 }
+
+# Create the Storage Account
+resource "azurerm_storage_account" "vm-automation-storage-account" {
+  name                     = "VM-Automation-Storage-Account"
+  resource_group_name       = azurerm_resource_group.vm-automation-rg.name
+  location                 = azurerm_resource_group.vm-automation-rg.location
+  account_tier              = "Standard"
+  account_replication_type = "LRS"
+
+  tags = {
+    environment = "Terraform"
+  }
+}
+
+# Create Blob container for Terraform state file
+resource "azurerm_storage_container" "vm-automation-storage-container" {
+  name                  = "terraform-Blob-Container"
+  storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
+  container_access_type = "private"
+}
+
+terraform {
+  backend "azurerm" {
+    resource_group_name   = azurerm_resource_group.vm-automation-rg.name
+    storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
+    container_name        = azurerm_storage_container.vm-automation-storage-container.name
+    key                   = "terraform.tfstate"
+  }
+}
+
 # # Output the kube_config for kubectl usage
 # output "kube_config" {
 #   value = azurerm_kubernetes_cluster.aks_cluster.kube_config_raw
