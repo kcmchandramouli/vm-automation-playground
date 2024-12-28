@@ -101,36 +101,39 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-# Create the Storage Account
-resource "azurerm_storage_account" "vm-automation-storage-account" {
-  name                     = var.storage_account_name #"VM-Automation-Storage-Account"
-  resource_group_name       = azurerm_resource_group.vm-automation-rg.name
-  location                 = azurerm_resource_group.vm-automation-rg.location
-  account_tier              = "Standard"
-  account_replication_type = "LRS"
+# # Create the Storage Account
+# resource "azurerm_storage_account" "vm-automation-storage-account" {
+#   name                     = var.storage_account_name #"VM-Automation-Storage-Account"
+#   resource_group_name       = azurerm_resource_group.vm-automation-rg.name
+#   location                 = azurerm_resource_group.vm-automation-rg.location
+#   account_tier              = "Standard"
+#   account_replication_type = "LRS"
 
-  tags = {
-    environment = "Terraform"
-  }
-}
+#   tags = {
+#     environment = "Terraform"
+#   }
+# }
 
-# Create Blob container for Terraform state file
-resource "azurerm_storage_container" "vm-automation-storage-container" {
-  name                  =  var.storage_account_container_name #"Terraform-Blob-Container"
-  storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
-  container_access_type = "private"
-}
+# # Create Blob container for Terraform state file
+# resource "azurerm_storage_container" "vm-automation-storage-container" {
+#   name                  =  var.storage_account_container_name #"Terraform-Blob-Container"
+#   storage_account_name  = azurerm_storage_account.vm-automation-storage-account.name
+#   container_access_type = "private"
+# }
 
-terraform {
-  backend "azurerm" {
-    resource_group_name   = "cm-vm-automation"
-    storage_account_name  = "vmautostorageacc"
-    container_name        = "tf-blob-container"
-    key                   = "terraform.tfstate"
-  }
-}
+# terraform {
+#   backend "azurerm" {
+#     resource_group_name   = "cm-vm-automation"
+#     storage_account_name  = "vmautostorageacc"
+#     container_name        = "tf-blob-container"
+#     key                   = "terraform.tfstate"
+#   }
+# }
 
 # # # Output the kube_config for kubectl usage
 # # output "kube_config" {
 # #   value = azurerm_kubernetes_cluster.aks_cluster.kube_config_raw
 # # }
+output "public_ip" {
+  value = azurerm_linux_virtual_machine.vm.public_ip_address
+}
