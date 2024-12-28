@@ -19,6 +19,15 @@ resource "azurerm_subnet" "vm-automation-subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+# Create Public IP Address for the VM
+resource "azurerm_public_ip" "vm-automation-public-ip" {
+  name                = "vm-automation-public-ip"
+  location            = azurerm_resource_group.vm-automation-rg.location
+  resource_group_name = azurerm_resource_group.vm-automation-rg.name
+  allocation_method   = "Dynamic"
+  sku                 = "Standard"
+  domain_name_label   = "automation-vm"  # Optional: You can use this to assign a DNS label
+}
 # Create Network Interface (NIC) for the VM
 resource "azurerm_network_interface" "vm-automation-nic" {
   name                = "vm-automation-Nic"
@@ -29,6 +38,7 @@ resource "azurerm_network_interface" "vm-automation-nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.vm-automation-subnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.vm-automation-public-ip.id # Attach public IP to NIC
   }
 }
 
