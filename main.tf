@@ -123,9 +123,9 @@ resource "azurerm_storage_container" "vm-automation-storage-container" {
 
 terraform {
   backend "azurerm" {
-    resource_group_name   = var.resource_group_name
-    storage_account_name  = var.storage_account_name
-    container_name        = var.storage_account_container_name
+    resource_group_name   = "cm-vm-automation"
+    storage_account_name  = "vmautostorageacc"
+    container_name        = "tf-blob-container"
     key                   = "terraform.tfstate"
   }
 }
