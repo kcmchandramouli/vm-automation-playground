@@ -25,7 +25,7 @@ resource "azurerm_public_ip" "vm-automation-public-ip" {
   location            = azurerm_resource_group.vm-automation-rg.location
   resource_group_name = azurerm_resource_group.vm-automation-rg.name
   allocation_method   = "Dynamic"
-  sku                 = "Standard"
+  sku                 = "Basic"
   domain_name_label   = "automation-vm"  # Optional: You can use this to assign a DNS label
 }
 # Create Network Interface (NIC) for the VM
