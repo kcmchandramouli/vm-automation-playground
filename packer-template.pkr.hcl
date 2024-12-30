@@ -1,42 +1,34 @@
 packer {
-    required_plugins {
-        azure = {
-            version = ">= 1.0.0"
-            source  = "github.com/hashicorp/azure"
-        }
+  required_plugins {
+    azure = {
+      version = ">= 1.0.0"
+      source  = "github.com/hashicorp/azure"
     }
+  }
 }
 
 source "azure-arm" "ubuntu" {
-  client_id       = var.azure_client_id
-  client_secret   = var.azure_client_secret
-  subscription_id = var.azure_subscription_id
-  tenant_id       = var.azure_tenant_id
+    client_id       = var.azure_client_id
+    client_secret   = var.azure_client_secret
+    subscription_id = var.azure_subscription_id
+    tenant_id       = var.azure_tenant_id
 
-  resource_group_name = "cm-vm-automation"  # Name of your Azure resource group
-  image_publisher     = "Canonical"            # Publisher for Ubuntu images
-  image_offer         = "0001-com-ubuntu-server-jammy"         # Ubuntu image offer
-  image_sku           = "22_04-lts"            # Ubuntu version
+  # # Specify the image you want to start with
+  managed_image_resource_group_name = "cm-vm-automation"
+  managed_image_name                = "nginx-image"
 
-  # Configure the VM size for building the image
-  vm_size = "Standard_B1s"
-
-  # Specify the Azure region
-#   region = "Central India"
-
-  # Required parameters that were missing
-  capture_container_name      = "packer-images"             # The container name where the captured image will be stored
-  managed_image_name          = "ubuntu-packer-image"       # The name of the managed image to be created
-  managed_image_resource_group_name = "cm-vm-automation"  # Resource group name for the managed image
-  os_type                     = "Linux"                     # OS type for the image (Linux in this case)
-  
-  # Storage account to store temporary build data
-  storage_account             = "cmstorageaccount1"      # A storage account for the build process
+  os_type                            = "Linux"
+  image_publisher                    = "Canonical"
+  image_offer                        = "0001-com-ubuntu-server-jammy"
+  image_sku                          = "22_04-lts-gen2"
+  location                           = "Central India"
+  vm_size                            = "Standard_B2ms"
+  os_disk_size_gb                    = 30
 }
 
 # Define the build block to create the image
 build {
-  name    = "ubuntu-vm-azure-image"
+  name = "ubuntu-vm-azure-image"
   sources = [
     "source.azure-arm.ubuntu"
   ]
@@ -48,11 +40,18 @@ build {
       "sudo apt-get install -y nginx"
     ]
   }
+
+  # # Post-processor: Use Azure CLI to upload the resulting VHD to Blob Storage
+  # post-processor "shell" {
+  #   inline = [
+  #     "az storage blob upload --account-name ${var.storage_account_name} --container-name ${var.container_name} --name 'packer-vm-image.vhd' --file '/tmp/packer-azure-arm.vhd' --auth-mode key"
+  #   ]
+  # }
 }
 
 # Define variables to be substituted with the environment variables
 variable "azure_client_id" {
-  default = "env.TF_VAR_azure_client_id"   # Reference the environment variable
+  default = "env.TF_VAR_azure_client_id" # Reference the environment variable
 }
 
 variable "azure_client_secret" {
@@ -60,7 +59,7 @@ variable "azure_client_secret" {
 }
 
 variable "azure_tenant_id" {
-  default = "env.TF_VAR_azure_tenant_id"    # Reference the environment variable
+  default = "env.TF_VAR_azure_tenant_id" # Reference the environment variable
 }
 
 variable "azure_subscription_id" {
